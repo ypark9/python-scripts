@@ -1,5 +1,6 @@
 import os
 import json
+import inquirer
 
 def is_code_file(filename):
     code_extensions = ['.js', '.ts', '.tsx', '.py', '.tf', '.hcl', '.sh', '.bash']
@@ -43,12 +44,38 @@ def walk_repository(repo_path):
 
     return repo_structure
 
-def main():
-    default_repo_path = "/path/to/frequently/used/repo"
-    default_output_file = "output.json"
+def get_user_input(prompt, choices):
+    questions = [
+        inquirer.List('choice',
+                      message=prompt,
+                      choices=choices,
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    return answers['choice']
 
-    repo_path = input(f"Enter the path to the cloned repository [{default_repo_path}]: ") or default_repo_path
-    output_file = input(f"Enter the output file name [{default_output_file}]: ") or default_output_file
+def main():
+    # Define frequently used paths and output file names
+    repo_paths = [
+        "/Users/yoonsoopark/Documents/code/bespoke-crm",
+        "Custom path"
+    ]
+    output_files = [
+        "bespoke-crm.json",
+        "output2.json",
+        "output3.json",
+        "Custom filename"
+    ]
+
+    # Get user input for repository path
+    repo_path = get_user_input("Select the repository path:", repo_paths)
+    if repo_path == "Custom path":
+        repo_path = input("Enter the custom repository path: ")
+
+    # Get user input for output file name
+    output_file = get_user_input("Select the output file name:", output_files)
+    if output_file == "Custom filename":
+        output_file = input("Enter the custom output file name: ")
 
     repo_structure = walk_repository(repo_path)
 
