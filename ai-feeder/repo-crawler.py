@@ -10,23 +10,22 @@ def read_file_content(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
 
-def read_ignores_file():
+def read_includes_file():
     current_folder = os.path.dirname(os.path.abspath(__file__))
-    ignores_file_path = os.path.join(current_folder, '.crawler-ignores')
-    if os.path.exists(ignores_file_path):
-        with open(ignores_file_path, 'r', encoding='utf-8') as file:
-            ignores_data = json.load(file)
-            print('ignores_data:', ignores_data)
-            return ignores_data.get("ignores", [])
+    includes_file_path = os.path.join(current_folder, '.crawler-includes')
+    if os.path.exists(includes_file_path):
+        with open(includes_file_path, 'r', encoding='utf-8') as file:
+            includes_data = json.load(file)
+            return includes_data.get("includes", [])
     return []
 
 def walk_repository(repo_path):
     repo_structure = {}
-    ignores = read_ignores_file()
+    includes = read_includes_file()
 
     for root, dirs, files in os.walk(repo_path):
-        # Skip ignored directories
-        if any(ignored in root for ignored in ignores):
+        # Skip directories not listed in includes
+        if not any(root.startswith(os.path.join(repo_path, include)) for include in includes):
             continue
 
         current_level = repo_structure
@@ -58,9 +57,11 @@ def main():
     # Define frequently used paths and output file names
     repo_paths = [
         "/Users/yoonsoopark/Documents/code/bespoke-crm",
+        "/Users/yoonsoopark/Documents/code/testing/aws-state-provisioning",
         "Custom path"
     ]
     output_files = [
+        "Use Repository Name",
         "bespoke-crm.json",
         "output2.json",
         "output3.json",
@@ -76,6 +77,8 @@ def main():
     output_file = get_user_input("Select the output file name:", output_files)
     if output_file == "Custom filename":
         output_file = input("Enter the custom output file name: ")
+    elif output_file == "Use Repository Name":
+        output_file = os.path.basename(repo_path) + ".json"
 
     repo_structure = walk_repository(repo_path)
 

@@ -1,0 +1,12 @@
+{
+  "includes": [
+    "src",
+    "terraform",
+    "scripts",
+    ".github",
+    "package.json",
+    "bin",
+    "build",
+    "deploy"
+  ]
+}
