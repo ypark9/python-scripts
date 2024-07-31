@@ -3,7 +3,7 @@ import json
 import inquirer
 
 def is_code_file(filename):
-    code_extensions = ['.js', '.ts', '.tsx', '.py', '.tf', '.hcl', '.sh', '.bash']
+    code_extensions = ['.ts', '.tsx', '.py', '.tf', '.hcl', '.sh', '.bash']
     return any(filename.endswith(ext) for ext in code_extensions)
 
 def read_file_content(file_path):
@@ -16,16 +16,20 @@ def read_includes_file():
     if os.path.exists(includes_file_path):
         with open(includes_file_path, 'r', encoding='utf-8') as file:
             includes_data = json.load(file)
-            return includes_data.get("includes", [])
-    return []
+            return includes_data.get("includes", []), includes_data.get("excludes", []), includes_data.get("excludes_by_extension", [])
+    return [], [], []
 
 def walk_repository(repo_path):
     repo_structure = {}
-    includes = read_includes_file()
+    includes, excludes, excludes_by_extension = read_includes_file()
 
     for root, dirs, files in os.walk(repo_path):
         # Skip directories not listed in includes
         if not any(root.startswith(os.path.join(repo_path, include)) for include in includes):
+            continue
+
+        # Skip directories listed in excludes
+        if any(exclude in root for exclude in excludes):
             continue
 
         current_level = repo_structure
@@ -37,6 +41,10 @@ def walk_repository(repo_path):
             current_level = current_level.setdefault(part, {})
 
         for file in files:
+            # Skip files with extensions listed in excludes_by_extension
+            if any(file.endswith(ext) for ext in excludes_by_extension):
+                continue
+
             if is_code_file(file):
                 file_path = os.path.join(root, file)
                 current_level[file] = read_file_content(file_path)
@@ -58,6 +66,7 @@ def main():
     repo_paths = [
         "/Users/yoonsoopark/Documents/code/bespoke-crm",
         "/Users/yoonsoopark/Documents/code/testing/aws-state-provisioning",
+        "/Users/yoonsoopark/Documents/code/python-orgfarm",
         "Custom path"
     ]
     output_files = [

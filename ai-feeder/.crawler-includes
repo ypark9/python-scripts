@@ -7,6 +7,21 @@
     "package.json",
     "bin",
     "build",
-    "deploy"
+    "deploy",
+    "infrastructure",
+    "orgfarm"
+  ],
+  "excludes": [
+    "test",
+    "integration_tests"
+  ],
+  "excludes_by_extension": [
+    ".md",
+    ".lock",
+    ".log",
+    ".txt",
+    ".tfstate",
+    ".tfstate.backup",
+    "d.ts"
   ]
 }
