@@ -1,0 +1,39 @@
+{
+  "includes": [
+    "src",
+    "terraform",
+    "scripts",
+    ".github",
+    "package.json",
+    "bin",
+    "build",
+    "deploy",
+    "infrastructure",
+    "orgfarm",
+    "workflows",
+    "Makefile"
+  ],
+  "excludes": ["test", "integration_tests", "node_modules", ".next", "dist"],
+  "excludes_by_extension": [
+    ".md",
+    ".lock",
+    ".log",
+    ".txt",
+    ".tfstate",
+    ".tfstate.backup",
+    "d.ts",
+    ".config.ts"
+  ],
+  "code_extensions": [
+    ".ts",
+    ".tsx",
+    ".py",
+    ".tf",
+    ".hcl",
+    ".sh",
+    ".bash",
+    ".yml",
+    ".yaml"
+  ],
+  "no_extension_files": ["Makefile", "Dockerfile"]
+}

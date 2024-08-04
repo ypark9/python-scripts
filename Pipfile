@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 inquirer = "*"
+pyyaml = "*"
+chardet = "*"
 
 [dev-packages]
 
