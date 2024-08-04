@@ -130,11 +130,15 @@ def main():
         output_file = os.path.basename(repo_path) + ".yaml"
     
     repo_structure = walk_repository(repo_path)
-    
-    with open(output_file, 'w', encoding='utf-8') as yaml_file:
+
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    output_folder = os.path.join(current_folder, "outputs")
+    os.makedirs(output_folder, exist_ok=True)
+    output_file_path = os.path.join(output_folder, output_file)
+    with open(output_file_path, 'w', encoding='utf-8') as yaml_file:
         yaml.dump(repo_structure, yaml_file, default_flow_style=False, allow_unicode=True)
     
-    print(f"Repository structure has been written to {output_file}")
+    print(f"Repository structure has been written to {output_file_path}")
 
 if __name__ == "__main__":
     main()
