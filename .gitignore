@@ -1,2 +1,7 @@
 .venv/
+
+# ignore backup config files
 crawler-configs-backup/
+
+# ignore outputs from crawler
+ai-feeder/outputs
