@@ -1,4 +1,5 @@
 .venv/
+.DS_Store
 
 # ignore backup config files
 crawler-configs-backup/
