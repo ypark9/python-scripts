@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
+
 import os
 import shutil
 import fnmatch
+import argparse
+import sys
 
-def get_repo_path():
-    default_path = os.getcwd()
+def get_repo_path(default_path):
     user_path = input(f"Enter the path of the repository (default: {default_path}): ").strip()
     return user_path if user_path else default_path
 
@@ -40,17 +43,22 @@ def copy_code_files(src_path, dest_path):
                 print(f"Copied: {rel_path}")
 
 def main():
-    repo_path = get_repo_path()
+    parser = argparse.ArgumentParser(description="Collect code files from a repository.")
+    parser.add_argument("-p", "--path", help="Path to the repository")
+    parser.add_argument("-o", "--output", help="Output directory path")
+    args = parser.parse_args()
+
+    repo_path = args.path if args.path else get_repo_path(os.getcwd())
     included_folders = get_included_folders(repo_path)
     
-    output_path = os.path.join(os.getcwd(), 'src')
+    output_path = args.output if args.output else os.path.join(os.getcwd(), 'src')
     os.makedirs(output_path, exist_ok=True)
     
     for folder in included_folders:
         folder_path = os.path.join(repo_path, folder)
         copy_code_files(folder_path, os.path.join(output_path, folder))
     
-    print(f"\nCode collection complete. Output is in the 'src' folder: {output_path}")
+    print(f"\nCode collection complete. Output is in: {output_path}")
 
 if __name__ == "__main__":
     main()
