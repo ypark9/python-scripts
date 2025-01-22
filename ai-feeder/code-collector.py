@@ -24,7 +24,7 @@ def get_included_folders(repo_path):
         return [folders[i] for i in selected_indices if i < len(folders)]
 
 def is_code_file(filename):
-    code_extensions = ('.py', '.ts', '.js', '.tf', '.java', '.cpp', '.c', '.h', '.cs', '.go', '.rb', '.php', '.swift', '.kt', '.rs')
+    code_extensions = ('.py', '.ts', '.js', '.tf', '.java', '.cpp', '.c', '.h', '.cs', '.go', '.rb', '.php', '.swift', '.kt', '.rs', 'yml', 'sh')
     return filename.lower().endswith(code_extensions)
 
 def should_exclude(filename):
@@ -42,16 +42,24 @@ def copy_code_files(src_path, dest_path):
                 shutil.copy2(src_file, dest_file)
                 print(f"Copied: {rel_path}")
 
+def get_project_name(path):
+    return os.path.basename(os.path.normpath(path))
+
 def main():
     parser = argparse.ArgumentParser(description="Collect code files from a repository.")
     parser.add_argument("-p", "--path", help="Path to the repository")
     parser.add_argument("-o", "--output", help="Output directory path")
+    parser.add_argument("-u", "--use-project-folder", action="store_true", help="Create a project-specific folder in the output directory")
     args = parser.parse_args()
 
     repo_path = args.path if args.path else get_repo_path(os.getcwd())
     included_folders = get_included_folders(repo_path)
     
-    output_path = args.output if args.output else os.path.join(os.getcwd(), 'src')
+    output_path = args.output if args.output else os.path.join(os.getcwd(), '.ai-feeder')
+    if args.use_project_folder:
+        project_name = get_project_name(repo_path)
+        output_path = os.path.join(output_path, project_name)
+    
     os.makedirs(output_path, exist_ok=True)
     
     for folder in included_folders:
